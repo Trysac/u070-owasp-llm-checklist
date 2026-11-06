@@ -1,21 +1,35 @@
-"""Static checklist for the OWASP Top 10 for LLM Applications 2025 over a repository: ten pattern hints plus answered questions, as Markdown or JSON"""
+"""Static checklist for the OWASP Top 10 for LLM Applications 2025.
+
+Combines ten static pattern hints with ten questions answered by a human and renders one
+report per repository as Markdown or JSON. Findings are hints, not proof.
+"""
 
 from __future__ import annotations
 
-__all__ = ["__version__", "normalize"]
+import logging
+
+from .answers import Answer, load_answers
+from .errors import ChecklistError
+from .report import Report, RiskStatus, build_report, render
+from .rules import RULES, Rule
+from .scanner import Finding, ScanResult, scan
+
+__all__ = [
+    "RULES",
+    "Answer",
+    "ChecklistError",
+    "Finding",
+    "Report",
+    "RiskStatus",
+    "Rule",
+    "ScanResult",
+    "__version__",
+    "build_report",
+    "load_answers",
+    "render",
+    "scan",
+]
 
 __version__ = "0.1.0"
 
-
-def normalize(value: str) -> str:
-    """Return ``value`` trimmed and lower-cased.
-
-    Placeholder API created by the template: replace it with the utility's real behavior.
-
-    Raises:
-        ValueError: if ``value`` is empty or only whitespace.
-    """
-    cleaned = value.strip()
-    if not cleaned:
-        raise ValueError("value must not be empty")
-    return cleaned.lower()
+logging.getLogger(__name__).addHandler(logging.NullHandler())
