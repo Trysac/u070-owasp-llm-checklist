@@ -2,27 +2,27 @@
 
 ## Purpose
 
-`trysac-owasp-llm-checklist` is a small, dependency-free Python library: Static checklist for the OWASP Top 10 for LLM Applications 2025 over a repository: ten pattern hints plus answered questions, as Markdown or JSON
+`trysac-owasp-llm-checklist` (import name `owasp_llm_checklist`) is a small, stdlib-only Python package. It scans a repository for static pattern hints of the OWASP Top 10 for LLM Applications 2025, combines them with human answers, and renders one report as Markdown or JSON.
 
 ## Shape
 
 ```text
-caller code --> owasp_llm_checklist (public API in __init__.py)
-                    |
-                    +-- pure functions, no I/O, no global state
+caller code / CLI (__main__.py)
+        |
+        +-- scanner.scan()        reads files, matches RULES, bounded
+        +-- answers.load_answers() reads and validates the answers JSON
+        +-- report.build_report() combines findings and answers per risk
+        +-- report.render()       Markdown or JSON output
 ```
 
-- **Public API**: the names listed in `__all__` of `src/owasp_llm_checklist/__init__.py`. Anything else is
-  internal and may change without a major version.
-- **Errors**: invalid input raises built-in exceptions (`ValueError`, `TypeError`) with a clear
-  message; the library never prints or exits.
-- **Side effects**: none. If a feature needs I/O, isolate it in its own module behind a small
-  interface and record the choice in an ADR.
+- **Public API**: the names listed in `__all__` of `src/owasp_llm_checklist/__init__.py`.
+- **Rules**: `src/owasp_llm_checklist/rules.py` defines `Rule` and the `RULES` tuple (`P01` to `P10`, `Q01` to `Q10`).
+- **Errors**: `ChecklistError` with a stable `code`, raised by the answers loader and the scanner for a missing directory.
+- **Side effects**: the scanner reads files under the given root; nothing is written. Logging uses `logging.getLogger(__name__)` with a `NullHandler`.
 
 ## Quality contract
 
-`scripts/check.py` is the single definition of the gates; `fabrica.json` tells the factory and CI
-how to run it. See [TESTING.md](TESTING.md).
+The gates are described in [TESTING.md](TESTING.md).
 
 ## Decisions
 

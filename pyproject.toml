@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+owasp-llm-checklist = "owasp_llm_checklist.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/Trysac/u070-owasp-llm-checklist"
 Source = "https://github.com/Trysac/u070-owasp-llm-checklist"
